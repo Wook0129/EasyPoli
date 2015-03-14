@@ -2,6 +2,8 @@ package database;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import datamodel.StructuredArticle;
+import datamodel.WordVector;
 
 public class StructuredArticleDBHandler extends DBHandler{
 
@@ -13,9 +15,9 @@ public class StructuredArticleDBHandler extends DBHandler{
 		catch (SQLException e) {e.printStackTrace();}
 	}
 
-	public void insert(String termVector, String topicNum, String date) {
+	public void insert(WordVector wordVector, String topicNum, String date) {
 		try{
-			String sql = "INSERT INTO "+tableName+" (termvector, topicnum, date) VALUES ('"+termVector+"','"+topicNum+"','"+date+"')";
+			String sql = "INSERT INTO "+tableName+" (termvector, topicnum, date) VALUES ('"+wordVector.toString()+"','"+topicNum+"','"+date+"')";
 			stmt.execute(sql);
 		}catch(Exception e){e.printStackTrace();}
 	}
@@ -54,5 +56,26 @@ public class StructuredArticleDBHandler extends DBHandler{
 			String sql= "DELETE FROM "+tableName+" WHERE "+colName+"= '"+value+"'";
 			stmt.execute(sql);
 		}catch(Exception e){e.printStackTrace();}
+	}
+	
+	public StructuredArticle[] getArticlesInDate(String givenDate){
+		StructuredArticle[] sArticles = new StructuredArticle[30]; //네이버 많이 본 뉴스는 하루에 30위까지 제공됨
+		try{
+			String sql = "SELECT * FROM "+tableName+" WHERE date = '"+givenDate+"'";
+			ResultSet rs = stmt.executeQuery(sql);
+			
+			int cnt = 0;
+			while(rs.next()){
+				//Retrieve by column name
+				String termVector = rs.getString("termVector");
+				String topicNum = rs.getString("topicNum");
+				String date = rs.getString("date");
+				//StructuredArticle 객체로 저장
+				sArticles[cnt] = new StructuredArticle(termVector,topicNum,date);
+				cnt++;
+			}
+			rs.close();
+		}catch(Exception e){e.printStackTrace();}
+		return sArticles;
 	}
 }

@@ -4,10 +4,16 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
+import database.ArticleDBHandler;
+import database.StructuredArticleDBHandler;
+import datamodel.Article;
+import datamodel.StructuredArticle;
 
 public class Crawler {
 	private String startDate;
@@ -26,9 +32,12 @@ public class Crawler {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 
 		try{
+			ArticleDBHandler adbh = new ArticleDBHandler(); //크롤한 결과를 article table에 저장한다
+			StructuredArticleDBHandler sadbh = new StructuredArticleDBHandler();
+			
 			Date start = sdf.parse(startDate);
 			Date end = sdf.parse(endDate);
-			for(gcal.setTime(start);gcal.getTime().before(end);gcal.add(Calendar.DAY_OF_YEAR, 1)){
+			for(gcal.setTime(start);gcal.getTime().before(end) || gcal.getTime().equals(end);gcal.add(Calendar.DAY_OF_YEAR, 1)){
 				String date = sdf.format(gcal.getTimeInMillis());
 
 				String url = "http://news.naver.com/main/ranking/popularDay.nhn?rankingType=popular_day&sectionId=100&date="+date;
@@ -52,14 +61,22 @@ public class Crawler {
 					if(link.toString().contains("main/ranking/read.nhn?mid=etc&amp;sid1=111&amp")){
 						String subUrl = link.absUrl("href");
 						articlePage = Jsoup.connect(subUrl).timeout(3000).get();
+						Element articleTitle = articlePage.select("#articleTitle").first();
 						Element articleBody = articlePage.select("#articleBodyContents").first();
-						String content = articleBody.text().split("기자")[1];
-						System.out.println(content);
+						String title = articleTitle.text().replace("'", "''");
+						String content = articleBody.text().replaceAll("'", "''"); // SQL에서 '는 ''로 입력해야 함
+						adbh.insert(title, content, date); // 기사를 DB에 저장
+						// 구조화하고 저장
+						StructuredArticle sArticle = new StructuredArticle(new Article(title,content,date));
+						sadbh.insert(sArticle.getTermVector(), "0", sArticle.getDate());
 					}
 				}
 			}
+			
+			adbh.close();
+			sadbh.close();
+			
 		}catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

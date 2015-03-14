@@ -34,7 +34,9 @@ public abstract class DBHandler {
 		}catch(SQLException se){se.printStackTrace();}
 	}
 	
-	public abstract void insert(String col1, String col2, String col3);
+	public void insert(String col1, String col2, String col3){
+		
+	}
 
 	public abstract void update(String colName, String original, String modified);
 

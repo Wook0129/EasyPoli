@@ -1,18 +1,17 @@
 package datamodel;
 
 public class Article {
-	private int index;
+	private String index;
 	private String title;
 	private String content;
 	private String date;
 	
-	public Article(int index, String title, String content, String date){
-		this.index = index;
+	public Article(String title, String content, String date){
 		this.title = title;
 		this.content = content;
 		this.date = date;
 	}
-	public int getIndex(){
+	public String getIndex(){
 		return index;
 	}
 	public String getTitle(){
@@ -21,7 +20,6 @@ public class Article {
 	public String getContent(){
 		return content;
 	}
-	
 	public String getDate(){
 		return date;
 	}

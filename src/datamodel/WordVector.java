@@ -2,6 +2,12 @@ package datamodel;
 
 import java.util.HashMap;
 import java.util.List;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 import com.twitter.penguin.korean.TwitterKoreanProcessorJava;
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer;
 
@@ -55,6 +61,34 @@ public class WordVector {
 			freqVector[cnt] = value;
 		}
 		return freqVector;
+	}
+	
+	public String toString(){
+		String result = "";
+		JSONObject jObject = new JSONObject();
+		for(String key : termFreqVector.keySet()){
+			jObject.put(key, termFreqVector.get(key));
+		}
+		result = jObject.toString();
+		return result;
+	}
+	
+	public static WordVector toVector(String jsonString){
+		WordVector wv = new WordVector();
+		
+		JSONParser jParser = new JSONParser();
+		JSONObject jObject = new JSONObject();
+		try {
+			jObject = (JSONObject) jParser.parse(jsonString);
+		} catch (ParseException e) {e.printStackTrace();}
+		
+		for(Object key : jObject.keySet()){
+			String term = key.toString();
+			double freq = Double.parseDouble(jObject.get(key).toString());
+			wv.termFreqVector.put(term, freq);
+			wv.numVoca++;
+		}
+		return wv;
 	}
 	
 	public void print(){

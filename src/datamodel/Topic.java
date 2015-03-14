@@ -4,26 +4,43 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Topic {
-	private int index;
+	private String index;
 	private WordVector centralVector = new WordVector();
-	private Set<StructuredArticle> articles = new HashSet<StructuredArticle>();
-
-	public Topic(int index, WordVector centralVector, Set<StructuredArticle> articles){
+	private Set<String> articles = new HashSet<String>(); //토픽에 포함되어 있는 기사들의 인덱스
+	private String startDate;
+	
+	public Topic(){
+		
+	}
+	public Topic(String index, WordVector centralVector, Set<String> articles, String startDate){
 		this.index = index;
 		this.centralVector = centralVector;
 		this.articles = articles;
+		this.startDate = startDate;
 	}
-	public int getIndex(){
+	public Topic(String index, String jsonCentralVector, String ArticleSetInString, String startDate){ //DB에서 꺼낼때 사용하는 생성자
+		this.index = index;
+		this.centralVector = WordVector.toVector(jsonCentralVector);
+		String[] articleArray = ArticleSetInString.replaceAll("{","").replaceAll("}", "").split(",");
+		for(String article : articleArray){
+			this.articles.add(article);
+		}
+		this.startDate = startDate;
+	}
+	public String getIndex(){
 		return index;
 	}
 	public WordVector getCentralVector(){
 		return centralVector;
 	}
-	public Set<StructuredArticle> getArticles(){
+	public Set<String> getArticles(){
 		return articles;
 	}
+	public String getStartDate(){
+		return startDate;
+	}
 	public void addArticle(StructuredArticle article){
-		articles.add(article);
+		articles.add(article.getIndex());
 		centralVector = findCentralVector();
 	}
 	private WordVector findCentralVector(){
