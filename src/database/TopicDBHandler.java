@@ -3,6 +3,7 @@ package database;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import datamodel.StructuredArticle;
 import datamodel.Topic;
 
 public class TopicDBHandler extends DBHandler{
@@ -44,9 +45,9 @@ public class TopicDBHandler extends DBHandler{
 		}catch(Exception e){e.printStackTrace();}
 	}
 
-	public void update(String colName, String original, String modified){
+	public void update(String index, String colName, String modified){
 		try{
-			String sql = "UPDATE "+tableName+" SET "+colName+"='"+modified+"' WHERE "+colName+" = '"+original+"'";
+			String sql = "UPDATE "+tableName+" SET "+colName+" = '"+modified+"' WHERE `index` = "+index;
 			stmt.execute(sql);
 		}catch(Exception e){e.printStackTrace();}
 	}
@@ -73,5 +74,16 @@ public class TopicDBHandler extends DBHandler{
 
 		}catch(Exception e){e.printStackTrace();}
 		return topics;
+	}
+	
+	public String lastInsertedID(){
+		String lastRow = "";
+		try{
+			String sql = "SELECT LAST_INSERT_ID()";
+			ResultSet rs = stmt.executeQuery(sql);
+			if(rs.next())lastRow = rs.getString("LAST_INSERT_ID()");
+			rs.close();
+		}catch(Exception e){e.printStackTrace();}
+		return lastRow;
 	}
 }

@@ -33,14 +33,4 @@ public abstract class DBHandler {
 			if(conn!=null) conn.close();
 		}catch(SQLException se){se.printStackTrace();}
 	}
-	
-	public void insert(String col1, String col2, String col3){
-		
-	}
-
-	public abstract void update(String colName, String original, String modified);
-
-	public abstract void select(String col, String value);
-
-	public abstract void delete(String col, String value);
 }

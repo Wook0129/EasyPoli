@@ -60,7 +60,7 @@ public class Crawler {
 				for(Element link: links){
 					if(link.toString().contains("main/ranking/read.nhn?mid=etc&amp;sid1=111&amp")){
 						String subUrl = link.absUrl("href");
-						articlePage = Jsoup.connect(subUrl).timeout(3000).get();
+						articlePage = Jsoup.connect(subUrl).timeout(5000).get();
 						Element articleTitle = articlePage.select("#articleTitle").first();
 						Element articleBody = articlePage.select("#articleBodyContents").first();
 						String title = articleTitle.text().replace("'", "''");

@@ -11,7 +11,8 @@ public class StructuredArticle {
 		this.topicNum = "0";
 		this.date = article.getDate();
 	}
-	public StructuredArticle(String jsonTermVector, String topicNum, String date){ //기사를 DB에서 불러올 때 이용
+	public StructuredArticle(String index, String jsonTermVector, String topicNum, String date){ //기사를 DB에서 불러올 때 이용
+		this.index = index;
 		this.termVector = WordVector.toVector(jsonTermVector);
 		this.topicNum = topicNum;
 		this.date = date;

@@ -2,6 +2,7 @@ package database;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 import datamodel.StructuredArticle;
 import datamodel.WordVector;
 
@@ -44,9 +45,9 @@ public class StructuredArticleDBHandler extends DBHandler{
 		}catch(Exception e){e.printStackTrace();}
 	}
 	
-	public void update(String colName, String original, String modified){
+	public void update(String index, String colName, String modified){
 		try{
-			String sql = "UPDATE "+tableName+" SET "+colName+"='"+modified+"' WHERE "+colName+" = '"+original+"'";
+			String sql = "UPDATE "+tableName+" SET "+colName+" = '"+modified+"' WHERE `index` = "+index;
 			stmt.execute(sql);
 		}catch(Exception e){e.printStackTrace();}
 	}
@@ -67,11 +68,33 @@ public class StructuredArticleDBHandler extends DBHandler{
 			int cnt = 0;
 			while(rs.next()){
 				//Retrieve by column name
-				String termVector = rs.getString("termVector");
+				String index = rs.getString("index");
+				String jsonTermVector = rs.getString("termVector");
 				String topicNum = rs.getString("topicNum");
 				String date = rs.getString("date");
 				//StructuredArticle 객체로 저장
-				sArticles[cnt] = new StructuredArticle(termVector,topicNum,date);
+				sArticles[cnt] = new StructuredArticle(index, jsonTermVector,topicNum,date);
+				cnt++;
+			}
+			rs.close();
+		}catch(Exception e){e.printStackTrace();}
+		return sArticles;
+	}
+	public StructuredArticle[] getArticlesInTopic(String givenTopicIndex){
+		StructuredArticle[] sArticles = new StructuredArticle[30]; //한 토픽에 최대 30개 기사
+		try{
+			String sql = "SELECT * FROM "+tableName+" WHERE `topicnum` = "+givenTopicIndex;
+			ResultSet rs = stmt.executeQuery(sql);
+			
+			int cnt = 0;
+			while(rs.next()){
+				//Retrieve by column name
+				String index = rs.getString("index");
+				String jsonTermVector = rs.getString("termVector");
+				String topicNum = rs.getString("topicNum");
+				String date = rs.getString("date");
+				//StructuredArticle 객체로 저장
+				sArticles[cnt] = new StructuredArticle(index, jsonTermVector,topicNum,date);
 				cnt++;
 			}
 			rs.close();
