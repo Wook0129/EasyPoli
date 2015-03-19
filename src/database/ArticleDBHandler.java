@@ -23,9 +23,9 @@ public class ArticleDBHandler extends DBHandler{
 		}catch(Exception e){e.printStackTrace();}
 	}
 	
-	public void update(String colName, String original, String modified){
+	public void update(String index, String colName, String value){
 		try{
-			String sql = "UPDATE "+tableName+" SET "+colName+"='"+modified+"' WHERE "+colName+" = '"+original+"'";
+			String sql = "UPDATE "+tableName+" SET "+colName+"='"+value+"' WHERE `index` = "+index;
 			stmt.execute(sql);
 		}catch(Exception e){e.printStackTrace();}
 	}

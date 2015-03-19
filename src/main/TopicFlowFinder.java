@@ -47,7 +47,10 @@ public class TopicFlowFinder {
 
 				//메인 기사번호로, 그 기사의 어휘벡터를 가져온다
 				Article mainArticle = adbh.getArticle(existTopics[cnt].getMainArticle());
+				
+				//TODO: 유사도 계산 부분. 현재는 기사에서 출현빈도 상위 10개씩을 가지고 자카드 계수로 구한다
 				double sim = WordVector.jacqSim(topN, mainArticle.getTermVector().topNwords());
+				
 				if(sim > maxSim){
 					maxSim = sim;
 					//토픽의 메인 기사와, 새로운 기사가 유사하다면 새로운 기사는 토픽에 포함된다.
