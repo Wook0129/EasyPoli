@@ -67,7 +67,7 @@ public class Topic {
 				double sim = 0;
 				for(StructuredArticle oa : sa){
 					if(oa == null) break;
-					sim += WordVector.jacqSim(a.getTermVector(),oa.getTermVector());
+					sim += WordVector.jacqSim(a.getTermVector().topNwords(),oa.getTermVector().topNwords());
 				}
 				if(sim > maxSim){
 					maxSim = sim;

@@ -2,6 +2,7 @@ package database;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Vector;
 
 import datamodel.StructuredArticle;
 import datamodel.WordVector;
@@ -58,7 +59,32 @@ public class StructuredArticleDBHandler extends DBHandler{
 			stmt.execute(sql);
 		}catch(Exception e){e.printStackTrace();}
 	}
-	
+	public StructuredArticle[] getAllArticles(){
+		StructuredArticle[] sArticles = new StructuredArticle[0];
+		Vector v = new Vector();
+		try{
+			String sql = "SELECT * FROM "+tableName;
+			ResultSet rs = stmt.executeQuery(sql);
+
+			while(rs.next()){
+				//Retrieve by column name
+				String index = rs.getString("index");
+				String jsonTermVector = rs.getString("termVector");
+				String topicNum = rs.getString("topicNum");
+				String date = rs.getString("date");
+				//StructuredArticle 객체로 저장
+				StructuredArticle sArticle = new StructuredArticle(index, jsonTermVector,topicNum,date);
+				v.add(sArticle);
+			}
+			rs.close();
+			Object[] o = v.toArray();
+			sArticles = new StructuredArticle[o.length];
+			for(int cnt = 0; cnt<o.length; cnt++){
+				sArticles[cnt] = (StructuredArticle)o[cnt];
+			}
+		}catch(Exception e){e.printStackTrace();}
+		return sArticles;
+	}
 	public StructuredArticle[] getArticlesInDate(String givenDate){
 		StructuredArticle[] sArticles = new StructuredArticle[30]; //네이버 많이 본 뉴스는 하루에 30위까지 제공됨
 		try{

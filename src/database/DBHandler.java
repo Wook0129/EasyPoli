@@ -20,7 +20,7 @@ public abstract class DBHandler {
 			Class.forName("com.mysql.jdbc.Driver");
 		} catch (ClassNotFoundException e) {e.printStackTrace();}
 		//STEP 3: Open a connection
-		System.out.println("Connecting to database...");
+//		System.out.println("Connecting to database...");
 		try {conn = DriverManager.getConnection(DB_URL,USER,PASS);
 		} catch (SQLException e) {e.printStackTrace();}
 	}

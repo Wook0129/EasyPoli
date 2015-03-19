@@ -2,6 +2,7 @@ package database;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Vector;
 
 import datamodel.StructuredArticle;
 import datamodel.Topic;
@@ -59,19 +60,25 @@ public class TopicDBHandler extends DBHandler{
 		}catch(Exception e){e.printStackTrace();}
 	}
 	
-	public Topic[] retrieveAllTopics(){ //givenDate의 전날까지 누적된 토픽들을 반환한다
-		Topic[] topics = new Topic[30*30*6];
+	public Topic[] retrieveAllTopics(){
+		Vector v = new Vector();
+		Topic[] topics = null;
 		try{
 			String sql = "SELECT * FROM "+tableName;
 			ResultSet rs = stmt.executeQuery(sql);
-			int cnt = 0;
-			
+
 			while(rs.next()){
 				//Retrieve by column name
-				topics[cnt] = new Topic(rs.getString("index"),rs.getString("centralVector"),rs.getString("articleSet"),rs.getString("startDate"));
+				Topic topic = new Topic(rs.getString("index"),rs.getString("centralVector"),rs.getString("articleSet"),rs.getString("startDate"));
+				v.add(topic);
 			}
 			rs.close();
-
+			
+			Object[] o = v.toArray();
+			topics = new Topic[o.length];
+			for(int cnt=0; cnt<o.length; cnt++){
+				topics[cnt] = (Topic)o[cnt];
+			}
 		}catch(Exception e){e.printStackTrace();}
 		return topics;
 	}
