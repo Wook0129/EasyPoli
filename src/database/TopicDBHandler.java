@@ -4,7 +4,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
 
-import datamodel.StructuredArticle;
 import datamodel.Topic;
 
 public class TopicDBHandler extends DBHandler{
@@ -17,32 +16,10 @@ public class TopicDBHandler extends DBHandler{
 		catch (SQLException e) {e.printStackTrace();}
 	}
 
-	public void insert(String centralVector, String articleSet, String startDate) {
+	public void insert(String mainArticle, String articleSet, String startDate) {
 		try{
-			String sql = "INSERT INTO "+tableName+" (centralVector, articleSet, startDate) VALUES ('"+centralVector+"','"+articleSet+"','"+startDate+"')";
+			String sql = "INSERT INTO "+tableName+" (mainArticle, articleSet, startDate) VALUES ('"+mainArticle+"','"+articleSet+"','"+startDate+"')";
 			stmt.execute(sql);
-		}catch(Exception e){e.printStackTrace();}
-	}
-
-	public void select(String col, String value) {
-		try{
-			String sql = "SELECT * FROM "+tableName+" WHERE index = '"+value+"'";
-			ResultSet rs = stmt.executeQuery(sql);
-
-			while(rs.next()){
-				//Retrieve by column name
-				String index  = rs.getString("index");
-				String centralVector = rs.getString("centralVector");
-				String articleSet = rs.getString("articleSet");
-				String startDate = rs.getString("startDate");
-				//Display values
-				System.out.print("index: " + index);
-				System.out.print(", centralVector: " + centralVector);
-				System.out.print(", articleSet: " + articleSet);
-				System.out.print(", startDate: " + startDate);
-			}
-			rs.close();
-
 		}catch(Exception e){e.printStackTrace();}
 	}
 
@@ -53,15 +30,8 @@ public class TopicDBHandler extends DBHandler{
 		}catch(Exception e){e.printStackTrace();}
 	}
 	
-	public void delete(String colName, String value){
-		try{
-			String sql= "DELETE FROM "+tableName+" WHERE "+colName+"= '"+value+"'";
-			stmt.execute(sql);
-		}catch(Exception e){e.printStackTrace();}
-	}
-	
 	public Topic[] retrieveAllTopics(){
-		Vector v = new Vector();
+		Vector<Topic> v = new Vector<Topic>();
 		Topic[] topics = null;
 		try{
 			String sql = "SELECT * FROM "+tableName;
@@ -69,7 +39,7 @@ public class TopicDBHandler extends DBHandler{
 
 			while(rs.next()){
 				//Retrieve by column name
-				Topic topic = new Topic(rs.getString("index"),rs.getString("centralVector"),rs.getString("articleSet"),rs.getString("startDate"));
+				Topic topic = new Topic(rs.getString("index"),rs.getString("mainArticle"),rs.getString("articleSet"),rs.getString("startDate"));
 				v.add(topic);
 			}
 			rs.close();

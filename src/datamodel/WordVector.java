@@ -4,14 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import com.twitter.penguin.korean.TwitterKoreanProcessorJava;
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer;
@@ -68,34 +62,6 @@ public class WordVector {
 		return freqVector;
 	}
 
-	public String toString(){
-		String result = "";
-		JSONObject jObject = new JSONObject();
-		for(String key : termFreqVector.keySet()){
-			jObject.put(key, termFreqVector.get(key));
-		}
-		result = jObject.toString();
-		return result;
-	}
-
-	public static WordVector toVector(String jsonString){
-		WordVector wv = new WordVector();
-
-		JSONParser jParser = new JSONParser();
-		JSONObject jObject = new JSONObject();
-		try {
-			jObject = (JSONObject) jParser.parse(jsonString);
-		} catch (ParseException e) {e.printStackTrace();}
-
-		for(Object key : jObject.keySet()){
-			String term = key.toString();
-			double freq = Double.parseDouble(jObject.get(key).toString());
-			wv.termFreqVector.put(term, freq);
-			wv.numVoca++;
-		}
-		return wv;
-	}
-
 	public void print(){
 		for(String key : termFreqVector.keySet()){
 			System.out.println(key + " : "+termFreqVector.get(key));
@@ -118,9 +84,8 @@ public class WordVector {
 			}
 		});
 		Object[] sortedArray = as.toArray();
-		//문서 내에서 출현 빈도가 높은 단어의 10 순위까지 본다
+		//문서 내에서 출현 빈도가 높은 단어의 20 순위까지 본다
 		final int termRank = Math.max(0, sortedArray.length - 10);
-//		if(sortedArray.length - termRank < 0) this.print();
 		for(int cnt = sortedArray.length - 1; cnt >= termRank; cnt--)
 		{
 				String word = sortedArray[cnt].toString().split("=")[0];

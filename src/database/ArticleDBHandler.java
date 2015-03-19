@@ -2,6 +2,7 @@ package database;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Vector;
 
 import datamodel.Article;
 
@@ -22,27 +23,6 @@ public class ArticleDBHandler extends DBHandler{
 		}catch(Exception e){e.printStackTrace();}
 	}
 	
-	//기사 DB에서는 날짜 단위로 검색, 삭제
-	public void select(String colName, String givenDate) { 
-		try{
-			String sql = "SELECT * FROM "+tableName+" WHERE "+colName+"= '"+givenDate+"'";
-			ResultSet rs = stmt.executeQuery(sql);
-			while(rs.next()){
-				//Retrieve by column name
-				String index  = rs.getString("index");
-				String title = rs.getString("title");
-				String content = rs.getString("content");
-				String date = rs.getString("date");
-				//Display values
-				System.out.print("index: " + index);
-				System.out.print(", title: " + title);
-				System.out.print(", content: " + content);
-				System.out.println(", date: " + date);
-			}
-			rs.close();
-		}catch(Exception e){e.printStackTrace();}
-	}
-	
 	public void update(String colName, String original, String modified){
 		try{
 			String sql = "UPDATE "+tableName+" SET "+colName+"='"+modified+"' WHERE "+colName+" = '"+original+"'";
@@ -50,30 +30,76 @@ public class ArticleDBHandler extends DBHandler{
 		}catch(Exception e){e.printStackTrace();}
 	}
 	
-	public void delete(String colName, String value){
+	//기사 하나를 가져오는 메서드
+	public Article getArticle(String idx){
+		Article article = null;
 		try{
-			String sql= "DELETE FROM "+tableName+" WHERE "+colName+"= '"+value+"'";
-			stmt.execute(sql);
-		}catch(Exception e){e.printStackTrace();}
-	}
-	
-	public Article[] getArticlesInDate(String givenDate){
-		Article[] articles = new Article[30]; //네이버 많이 본 뉴스는 하루에 30위까지 제공됨
-		try{
-			String sql = "SELECT * FROM "+tableName+" WHERE date = '"+givenDate+"'";
+			String sql = "SELECT * FROM "+tableName+" WHERE `index` = "+idx;
 			ResultSet rs = stmt.executeQuery(sql);
-			
-			int cnt = 0;
+
 			while(rs.next()){
-				//Retrieve by column name
+				String index = rs.getString("index");
 				String title = rs.getString("title");
 				String content = rs.getString("content");
 				String date = rs.getString("date");
-				//Article 객체로 저장
-				articles[cnt] = new Article(title,content,date); //TODO: 인덱스 제거
-				cnt++;
+				String topicNum = rs.getString("topicnum");
+				article = new Article(index, title, content, date, topicNum);
+			}
+
+		}catch(Exception e){e.printStackTrace();}
+		return article;
+	}
+	
+	//모든 기사를 가져오는 메서드
+	public Article[] getAllArticles(){
+		Article[] articles = null;
+		Vector v = new Vector();
+		try{
+			String sql = "SELECT * FROM "+tableName;
+			ResultSet rs = stmt.executeQuery(sql);
+
+			while(rs.next()){
+				String index = rs.getString("index");
+				String title = rs.getString("title");
+				String content = rs.getString("content");
+				String date = rs.getString("date");
+				String topicNum = rs.getString("topicnum");
+				Article article = new Article(index, title, content, date, topicNum);
+				v.add(article);
 			}
 			rs.close();
+			Object[] o = v.toArray();
+			articles = new Article[o.length];
+			for(int cnt = 0; cnt<o.length; cnt++){
+				articles[cnt] = (Article)o[cnt];
+			}
+		}catch(Exception e){e.printStackTrace();}
+		return articles;
+	}
+	
+	//특정 토픽에 속한 기사들을 가져오는 메서드
+	public Article[] getArticlesInTopic(String givenTopicIndex){
+		Article[] articles = null;
+		Vector v = new Vector();
+		try{
+			String sql = "SELECT * FROM "+tableName+" WHERE `topicnum` = "+givenTopicIndex;
+			ResultSet rs = stmt.executeQuery(sql);
+			
+			while(rs.next()){
+				String index = rs.getString("index");
+				String title = rs.getString("title");
+				String content = rs.getString("content");
+				String date = rs.getString("date");
+				String topicNum = rs.getString("topicnum");
+				Article article = new Article(index, title, content, date, topicNum);
+				v.add(article);
+			}
+			rs.close();
+			Object[] o = v.toArray();
+			articles = new Article[o.length];
+			for(int cnt = 0; cnt<o.length; cnt++){
+				articles[cnt] = (Article)o[cnt];
+			}
 		}catch(Exception e){e.printStackTrace();}
 		return articles;
 	}

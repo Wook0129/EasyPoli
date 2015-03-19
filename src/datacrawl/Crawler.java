@@ -11,9 +11,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import database.ArticleDBHandler;
-import database.StructuredArticleDBHandler;
-import datamodel.Article;
-import datamodel.StructuredArticle;
 
 public class Crawler {
 	private String startDate;
@@ -33,7 +30,6 @@ public class Crawler {
 
 		try{
 			ArticleDBHandler adbh = new ArticleDBHandler(); //크롤한 결과를 article table에 저장한다
-			StructuredArticleDBHandler sadbh = new StructuredArticleDBHandler();
 			
 			Date start = sdf.parse(startDate);
 			Date end = sdf.parse(endDate);
@@ -66,15 +62,10 @@ public class Crawler {
 						String title = articleTitle.text().replace("'", "''");
 						String content = articleBody.text().replaceAll("'", "''"); // SQL에서 '는 ''로 입력해야 함
 						adbh.insert(title, content, date); // 기사를 DB에 저장
-						// 구조화하고 저장
-						StructuredArticle sArticle = new StructuredArticle(new Article(title,content,date));
-						sadbh.insert(sArticle.getTermVector(), "0", sArticle.getDate());
 					}
 				}
-			}
-			
+			}	
 			adbh.close();
-			sadbh.close();
 			
 		}catch (Exception e) {
 			e.printStackTrace();
