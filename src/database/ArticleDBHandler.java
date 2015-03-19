@@ -52,6 +52,7 @@ public class ArticleDBHandler extends DBHandler{
 	
 	//모든 기사를 가져오는 메서드
 	public Article[] getAllArticles(){
+		
 		Article[] articles = null;
 		Vector v = new Vector();
 		try{

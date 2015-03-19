@@ -6,6 +6,7 @@ import java.util.Set;
 import database.ArticleDBHandler;
 
 public class Topic {
+	
 	private String index;
 	private String mainArticle;
 	private Set<String> articleSet = new HashSet<String>(); //토픽에 포함되어 있는 기사들의 인덱스

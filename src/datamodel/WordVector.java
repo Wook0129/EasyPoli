@@ -11,6 +11,7 @@ import com.twitter.penguin.korean.TwitterKoreanProcessorJava;
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer;
 
 public class WordVector {
+	
 	private int numVoca;
 	private HashMap<String,Double> termFreqVector = new HashMap<String, Double>(10); //초기용량 10
 

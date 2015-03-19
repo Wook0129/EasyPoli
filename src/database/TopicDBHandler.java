@@ -9,7 +9,7 @@ import datamodel.Topic;
 public class TopicDBHandler extends DBHandler{
 
 	final private static String tableName = "topic";
-
+	
 	public TopicDBHandler(){
 		connect();
 		try {stmt = conn.createStatement();}

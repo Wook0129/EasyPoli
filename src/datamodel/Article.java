@@ -1,6 +1,7 @@
 package datamodel;
 
 public class Article {
+	
 	private String index;
 	private String title;
 	private String content;

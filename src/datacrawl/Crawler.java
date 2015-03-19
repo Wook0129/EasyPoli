@@ -65,8 +65,7 @@ public class Crawler {
 					}
 				}
 			}	
-			adbh.close();
-			
+			adbh.close();		
 		}catch (Exception e) {
 			e.printStackTrace();
 		}

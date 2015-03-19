@@ -44,7 +44,6 @@ public class TopicFlowFinder {
 
 			existTopics = tdbh.retrieveAllTopics();
 			for(int cnt = 0; cnt<existTopics.length; cnt++){
-
 				//메인 기사번호로, 그 기사의 어휘벡터를 가져온다
 				Article mainArticle = adbh.getArticle(existTopics[cnt].getMainArticle());
 				
