@@ -86,7 +86,7 @@ public class WordVector {
 		});
 		Object[] sortedArray = as.toArray();
 		//문서 내에서 출현 빈도가 높은 단어의 20 순위까지 본다
-		final int termRank = Math.max(0, sortedArray.length - 10);
+		final int termRank = Math.max(0, sortedArray.length - 20);
 		for(int cnt = sortedArray.length - 1; cnt >= termRank; cnt--)
 		{
 				String word = sortedArray[cnt].toString().split("=")[0];

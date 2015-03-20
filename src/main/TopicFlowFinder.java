@@ -16,7 +16,7 @@ public class TopicFlowFinder {
 
 		double cutOff = 0.1;
 		String startDate = "20150315";
-		String endDate = "20150318";
+		String endDate = "20150320";
 
 		// 해당 기간의 기사 크롤링 후 Article Table에 저장
 		Crawler c = new Crawler(startDate,endDate);
