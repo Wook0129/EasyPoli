@@ -4,8 +4,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
 
-import datamodel.Topic;
-
 public class TopicDBHandler extends DBHandler{
 
 	final private static String tableName = "topic";
@@ -30,27 +28,35 @@ public class TopicDBHandler extends DBHandler{
 		}catch(Exception e){e.printStackTrace();}
 	}
 	
-	public Topic[] retrieveAllTopics(){
-		Vector<Topic> v = new Vector<Topic>();
-		Topic[] topics = null;
+	public String getMainArticleOfTopic(String idx){ //지금은 mainArticle만 갖고 오도록 구현
+		String mainArticleIndex = "";
+		try{
+			String sql = "SELECT * FROM "+tableName+" WHERE `index` = "+idx;
+			ResultSet rs = stmt.executeQuery(sql);
+			while(rs.next()){
+				mainArticleIndex = rs.getString("mainArticle");
+			}
+		}catch(Exception e){e.printStackTrace();}
+		return mainArticleIndex;
+	}
+	
+	public String[] getAllTopicIndex(){
+		String[] index = {};
 		try{
 			String sql = "SELECT * FROM "+tableName;
 			ResultSet rs = stmt.executeQuery(sql);
-
+			Vector<String> v = new Vector<String>();
 			while(rs.next()){
-				//Retrieve by column name
-				Topic topic = new Topic(rs.getString("index"),rs.getString("mainArticle"),rs.getString("articleSet"),rs.getString("startDate"));
-				v.add(topic);
+				v.add(rs.getString("index"));
 			}
 			rs.close();
-			
 			Object[] o = v.toArray();
-			topics = new Topic[o.length];
+			index = new String[o.length];
 			for(int cnt=0; cnt<o.length; cnt++){
-				topics[cnt] = (Topic)o[cnt];
+				index[cnt] = (String)o[cnt];
 			}
 		}catch(Exception e){e.printStackTrace();}
-		return topics;
+		return index;
 	}
 	
 	public String lastInsertedID(){

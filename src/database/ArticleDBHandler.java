@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.Vector;
 
 import datamodel.Article;
+import datamodel.WordVector;
 
 public class ArticleDBHandler extends DBHandler{
 
@@ -38,12 +39,10 @@ public class ArticleDBHandler extends DBHandler{
 			ResultSet rs = stmt.executeQuery(sql);
 
 			while(rs.next()){
-				String index = rs.getString("index");
 				String title = rs.getString("title");
 				String content = rs.getString("content");
 				String date = rs.getString("date");
-				String topicNum = rs.getString("topicnum");
-				article = new Article(index, title, content, date, topicNum);
+				article = new Article(title, content, date);
 			}
 
 		}catch(Exception e){e.printStackTrace();}
@@ -54,7 +53,7 @@ public class ArticleDBHandler extends DBHandler{
 	public Article[] getAllArticles(){
 		
 		Article[] articles = null;
-		Vector v = new Vector();
+		Vector<Article> v = new Vector<Article>();
 		try{
 			String sql = "SELECT * FROM "+tableName;
 			ResultSet rs = stmt.executeQuery(sql);
@@ -65,7 +64,8 @@ public class ArticleDBHandler extends DBHandler{
 				String content = rs.getString("content");
 				String date = rs.getString("date");
 				String topicNum = rs.getString("topicnum");
-				Article article = new Article(index, title, content, date, topicNum);
+				Article article = new Article(index, new WordVector(title + " " + content), title, content, date, topicNum);
+
 				v.add(article);
 			}
 			rs.close();
@@ -80,19 +80,17 @@ public class ArticleDBHandler extends DBHandler{
 	
 	//특정 토픽에 속한 기사들을 가져오는 메서드
 	public Article[] getArticlesInTopic(String givenTopicIndex){
-		Article[] articles = null;
-		Vector v = new Vector();
+		Article[] articles = {};
+		Vector<Article> v = new Vector<Article>();
 		try{
 			String sql = "SELECT * FROM "+tableName+" WHERE `topicnum` = "+givenTopicIndex;
 			ResultSet rs = stmt.executeQuery(sql);
 			
 			while(rs.next()){
-				String index = rs.getString("index");
 				String title = rs.getString("title");
 				String content = rs.getString("content");
 				String date = rs.getString("date");
-				String topicNum = rs.getString("topicnum");
-				Article article = new Article(index, title, content, date, topicNum);
+				Article article = new Article(title, content, date);
 				v.add(article);
 			}
 			rs.close();

@@ -3,18 +3,23 @@ package datamodel;
 public class Article {
 	
 	private String index;
+	private WordVector termVector;
 	private String title;
 	private String content;
 	private String date;
 	private String topicNum;
 	
-	public Article(String title, String content, String date){ // 크롤링할때 이용
+	public Article(){
+		
+	}
+	public Article(String title, String content, String date){ // Use when Crawl -> DB Insert
 		this.title = title;
 		this.content = content;
 		this.date = date;
 	}
-	public Article(String index, String title, String content, String date, String topicNum){ //기사를 DB에서 불러올 때 이용
+	public Article(String index, WordVector termVector, String title, String content, String date, String topicNum){ // Use when DB -> Memory
 		this.index = index;
+		this.termVector = termVector;
 		this.title = title;
 		this.content = content;
 		this.date = date;
@@ -22,6 +27,9 @@ public class Article {
 	}
 	public String getIndex(){
 		return index;
+	}
+	public WordVector getTermVector(){
+		return termVector;
 	}
 	public String getTitle(){
 		return title;
@@ -35,8 +43,11 @@ public class Article {
 	public String getTopicNum(){
 		return topicNum;
 	}
-	public WordVector getTermVector(){
-		WordVector termVector = new WordVector(this.getTitle() + " " + this.getContent());
-		return termVector;
+	public void setTopicNum(String topicNum){
+		this.topicNum = topicNum;
+	}
+	@Override
+	public String toString(){
+		return this.index;
 	}
 }
