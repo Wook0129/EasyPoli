@@ -14,7 +14,8 @@ public class WordVector {
 	
 	private int numVoca;
 	private HashMap<String,Double> termFreqVector = new HashMap<String, Double>(10); //초기용량 10
-
+	final int n = 20;
+	
 	public WordVector(){
 		numVoca = 0;
 	}
@@ -85,8 +86,8 @@ public class WordVector {
 			}
 		});
 		Object[] sortedArray = as.toArray();
-		//문서 내에서 출현 빈도가 높은 단어의 20 순위까지 본다
-		final int termRank = Math.max(0, sortedArray.length - 20);
+		//문서 내에서 출현 빈도가 높은 단어의 N 순위까지 본다
+		final int termRank = Math.max(0, sortedArray.length - n);
 		for(int cnt = sortedArray.length - 1; cnt >= termRank; cnt--)
 		{
 				String word = sortedArray[cnt].toString().split("=")[0];
@@ -96,7 +97,7 @@ public class WordVector {
 		}
 		return topN;
 	}
-	//일단 자카드 계수 쓸거임. 그런데.. 정확하게 일치하지않는 단어라도 동의어가 있을 수 있음. 그런애들을 반영할 방법은 없을까? 사전 등 이용?
+	//자카드 계수
 	public static double jacqSim(WordVector vector1, WordVector vector2){
 		double sim = 0;
 		double numVoca1 = vector1.getNumOfVoca();
@@ -113,6 +114,7 @@ public class WordVector {
 		return sim;
 	}
 	
+	//구현해야 됨
 	public static double modifiedJacqSim(WordVector vector1, WordVector vector2){
 		double sim = 0;
 		double numVoca1 = vector1.getNumOfVoca();

@@ -14,21 +14,22 @@ public class TopicFlowFinder {
 
 	public static void main(String[] args){
 
-		double cutOff = 0.1;
-		String startDate = "20150315";
-		String endDate = "20150320";
-
-		// 해당 기간의 기사 크롤링 후 Article Table에 저장
-		Crawler c = new Crawler(startDate,endDate);
-		c.crawl();
+		double cutOff = 0.2;
+//		String startDate = "20150101";
+//		String endDate = "20150319";
+//
+//		// 해당 기간의 기사 크롤링 후 Article Table에 저장
+//		Crawler c = new Crawler(startDate,endDate);
+//		c.crawl();
 
 		//기사를 기존 토픽으로 분류하거나 새로운 토픽으로 만든다
 		ArticleDBHandler adbh = new ArticleDBHandler();
 		TopicDBHandler tdbh = new TopicDBHandler();
 
 		Article[] articles = adbh.getAllArticles();
-
+		System.out.println(articles.length);
 		for(int aCnt = 0; aCnt < articles.length; aCnt++){
+			System.out.println(aCnt);
 			//기사에서 출현빈도가 상위권에 드는 단어만 추린 벡터
 			WordVector topN = articles[aCnt].getTermVector().topNwords();
 
@@ -76,6 +77,8 @@ public class TopicFlowFinder {
 				adbh.update(articles[aCnt].getIndex(), "topicnum", tdbh.lastInsertedID());
 			}
 
-		}	
+		}
+		adbh.close();
+		tdbh.close();
 	}
 }
