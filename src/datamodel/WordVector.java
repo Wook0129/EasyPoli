@@ -15,6 +15,7 @@ public class WordVector {
 	private int numVoca;
 	private HashMap<String,Double> termFreqVector = new HashMap<String, Double>(10); //초기용량 10
 	final int n = 20;
+	public final static double cutOffForPersonVector = 0.7;
 	
 	public WordVector(){
 		numVoca = 0;
@@ -124,11 +125,10 @@ public class WordVector {
 		return sim;
 	}
 	
-	public static double termAndPersonSim(Article a1, Article a2){
-		double sim = 0;
-		double termSim = WordVector.jacqSim(a1.getTermVector().topNwords(),a2.getTermVector().topNwords()); //상위 N개의 단어를 사용하여 자카드계수 계산
-		double personSim = WordVector.jacqSim(a1.getPersonVector(), a2.getPersonVector()); //인물벡터의 유사도를 계산
-		sim = (2*termSim + personSim)/3;
+	public static double[] termAndPersonSim(Article a1, Article a2){
+		double[] sim = new double[2];
+		sim[0] = WordVector.jacqSim(a1.getTermVector().topNwords(),a2.getTermVector().topNwords()); //상위 N개의 단어를 사용하여 자카드계수 계산
+		sim[1] = WordVector.jacqSim(a1.getPersonVector(), a2.getPersonVector()); //인물벡터의 유사도를 계산
 		return sim;
 	}
 	

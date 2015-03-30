@@ -11,7 +11,8 @@ public class TopicFlowFinder {
 
 	public static void main(String[] args){
 
-		double cutOff = 0.3;
+		double cutOff = 0.2;
+
 		//		String startDate = "20150101";
 		//		String endDate = "20150319";
 		//
@@ -60,7 +61,10 @@ public class TopicFlowFinder {
 				Article mainArticle = topics[cnt].getMainArticle();
 				
 				//기사와, 토픽의 중심기사의 유사도 계산
-				double sim = WordVector.termAndPersonSim(articles[aCnt], mainArticle);
+				//기본적으로는 Term Vector의 유사도로 비교, 인물 집합이 유사하면 유사도에 추가점을 준다
+				double[] termPersonSim = WordVector.termAndPersonSim(articles[aCnt], mainArticle);
+				double sim = termPersonSim[0];
+				if(termPersonSim[1] > WordVector.cutOffForPersonVector) sim += 0.1;
 
 				if(sim > maxSim){
 					maxSim = sim;

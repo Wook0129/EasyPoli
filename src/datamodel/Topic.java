@@ -52,7 +52,9 @@ public class Topic {
 			double sim = 0;
 			for(Article oa : this.articleSet){
 				if(oa == null) break;
-				sim = WordVector.termAndPersonSim(a, oa);
+				double[] termPersonSim = WordVector.termAndPersonSim(a, oa);
+				sim = termPersonSim[0];
+				if(termPersonSim[1] > WordVector.cutOffForPersonVector) sim += 0.1;
 			}
 			if(sim > maxSim){
 				maxSim = sim;
