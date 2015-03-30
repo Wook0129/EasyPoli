@@ -4,6 +4,7 @@ public class Article {
 	
 	private String index;
 	private WordVector termVector;
+	private WordVector personVector;
 	private String title;
 	private String content;
 	private String date;
@@ -17,9 +18,10 @@ public class Article {
 		this.content = content;
 		this.date = date;
 	}
-	public Article(String index, WordVector termVector, String title, String content, String date, String topicNum){ // Use when DB -> Memory
+	public Article(String index, WordVector personVector, String title, String content, String date, String topicNum){ // Use when DB -> Memory
 		this.index = index;
-		this.termVector = termVector;
+		this.termVector = new WordVector(title + " " + content);
+		this.personVector = personVector;
 		this.title = title;
 		this.content = content;
 		this.date = date;
@@ -30,6 +32,9 @@ public class Article {
 	}
 	public WordVector getTermVector(){
 		return termVector;
+	}
+	public WordVector getPersonVector(){
+		return personVector;
 	}
 	public String getTitle(){
 		return title;

@@ -4,13 +4,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
 
+import ner.NERTagger;
 import datamodel.Article;
-import datamodel.WordVector;
 
 public class ArticleDBHandler extends DBHandler{
 
 	final private static String tableName = "article";
-
+	
 	public ArticleDBHandler(){
 		connect();
 		try {stmt = conn.createStatement();}
@@ -53,6 +53,8 @@ public class ArticleDBHandler extends DBHandler{
 	public Article[] getAllArticles(){
 		
 		Article[] articles = null;
+		NERTagger ner = new NERTagger();
+		
 		Vector<Article> v = new Vector<Article>();
 		try{
 			String sql = "SELECT * FROM "+tableName;
@@ -64,8 +66,7 @@ public class ArticleDBHandler extends DBHandler{
 				String content = rs.getString("content");
 				String date = rs.getString("date");
 				String topicNum = rs.getString("topicnum");
-				Article article = new Article(index, new WordVector(title + " " + content), title, content, date, topicNum);
-
+				Article article = new Article(index, ner.getNames(title + " " + content), title, content, date, topicNum);
 				v.add(article);
 			}
 			rs.close();

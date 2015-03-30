@@ -69,6 +69,13 @@ public class WordVector {
 			System.out.println(key + " : "+termFreqVector.get(key));
 		}
 	}
+	public String terms(){
+		String result = "";
+		for(String key : termFreqVector.keySet()){
+			result += key + ", ";
+		}
+		return result;
+	}
 	public WordVector topNwords(){
 		WordVector topN = new WordVector();
 		ArrayList as = new ArrayList(termFreqVector.entrySet());
@@ -102,6 +109,9 @@ public class WordVector {
 		double sim = 0;
 		double numVoca1 = vector1.getNumOfVoca();
 		double numVoca2 = vector2.getNumOfVoca();
+		
+		if(numVoca1 == 0 || numVoca2 == 0) return sim; //No element in vector -> sim = 0
+		
 		double interSection = 0;
 		String[] termVector1 = vector1.getTermVector();
 		String[] termVector2 = vector2.getTermVector();
@@ -114,23 +124,11 @@ public class WordVector {
 		return sim;
 	}
 	
-	//구현해야 됨
-	public static double modifiedJacqSim(WordVector vector1, WordVector vector2){
+	public static double termAndPersonSim(Article a1, Article a2){
 		double sim = 0;
-		double numVoca1 = vector1.getNumOfVoca();
-		double numVoca2 = vector2.getNumOfVoca();
-		String[] termVector1 = vector1.getTermVector();
-		String[] termVector2 = vector2.getTermVector();
-		double[] freqVector1 = vector1.getFreqVector();
-		double[] freqVector2 = vector2.getFreqVector();
-		for(int cnt=0; cnt<termVector1.length; cnt++){
-			for(int cnt2=0; cnt2<termVector2.length; cnt2++){
-				if(termVector1[cnt].equals(termVector2[cnt2])) {
-					sim += (freqVector1[cnt]/numVoca1 + freqVector2[cnt2]/numVoca2);
-					break;
-				}
-			}
-		}
+		double termSim = WordVector.jacqSim(a1.getTermVector().topNwords(),a2.getTermVector().topNwords()); //상위 N개의 단어를 사용하여 자카드계수 계산
+		double personSim = WordVector.jacqSim(a1.getPersonVector(), a2.getPersonVector()); //인물벡터의 유사도를 계산
+		sim = (2*termSim + personSim)/3;
 		return sim;
 	}
 	

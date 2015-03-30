@@ -11,7 +11,7 @@ public class TopicFlowFinder {
 
 	public static void main(String[] args){
 
-		double cutOff = 0.15;
+		double cutOff = 0.3;
 		//		String startDate = "20150101";
 		//		String endDate = "20150319";
 		//
@@ -24,22 +24,22 @@ public class TopicFlowFinder {
 		ArticleDBHandler adbh = new ArticleDBHandler();
 		TopicDBHandler tdbh = new TopicDBHandler();
 		
+		System.out.println(">>>>> Getting all aritcles from database..");
 		long start = System.currentTimeMillis();
 		Article[] articles = adbh.getAllArticles();
 		long end = System.currentTimeMillis();
-		System.out.println(((end - start)/(double)1000));
+		System.out.println(">>>>> Complete. Elapsed Time : "+((end - start)/(double)1000)+" sec");
 		
 		
 		Topic[] topics = new Topic[900];
 		int topicCnt = 0;
 
-		System.out.println(articles.length);
-
+		System.out.println(">>>>>Num of Articles : "+articles.length);
+		start = System.currentTimeMillis();
 		for(int aCnt = 0; aCnt < articles.length; aCnt++){
-
-			System.out.println(aCnt);
+			System.out.print("\r"+aCnt+" th Article");
+			System.out.print(">>>>> Processing ");
 			//기사에서 출현빈도가 상위권에 드는 단어만 추린 벡터
-			WordVector topN = articles[aCnt].getTermVector().topNwords();
 
 			double maxSim = 0;
 			Topic toAddNewArticle = new Topic(); //새로 들어온 기사를 포함시킬 토픽
@@ -58,8 +58,9 @@ public class TopicFlowFinder {
 				if(topics[cnt] == null) break;
 
 				Article mainArticle = topics[cnt].getMainArticle();
-
-				double sim = WordVector.jacqSim(topN, mainArticle.getTermVector().topNwords());
+				
+				//기사와, 토픽의 중심기사의 유사도 계산
+				double sim = WordVector.termAndPersonSim(articles[aCnt], mainArticle);
 
 				if(sim > maxSim){
 					maxSim = sim;
@@ -85,7 +86,10 @@ public class TopicFlowFinder {
 			}
 
 		}
-		
+		System.out.println();
+		end = System.currentTimeMillis();
+		System.out.println(">>>>> Complete. Elapsed Time : "+((end - start)/(double)1000)+" sec");
+		System.out.println(">>>>> Inserting result into Database");
 		for(Topic t : topics){
 			if(t == null) break;
 			tdbh.insert(t.getMainArticle().getIndex(), t.getArticles().toString(), t.getStartDate());
@@ -98,5 +102,6 @@ public class TopicFlowFinder {
 		}
 		adbh.close();
 		tdbh.close();
+		System.out.println(">>>>> Finished!");
 	}
 }

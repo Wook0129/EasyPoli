@@ -52,7 +52,7 @@ public class Topic {
 			double sim = 0;
 			for(Article oa : this.articleSet){
 				if(oa == null) break;
-				sim += WordVector.jacqSim(a.getTermVector().topNwords(),oa.getTermVector().topNwords()); //상위 N개의 단어를 사용하여 자카드계수 계산
+				sim = WordVector.termAndPersonSim(a, oa);
 			}
 			if(sim > maxSim){
 				maxSim = sim;
