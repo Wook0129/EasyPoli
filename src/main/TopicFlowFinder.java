@@ -11,7 +11,7 @@ public class TopicFlowFinder {
 
 	public static void main(String[] args){
 
-		double cutOff = 0.2;
+		double cutOff = 0.15;
 
 		//		String startDate = "20150101";
 		//		String endDate = "20150319";
@@ -38,8 +38,7 @@ public class TopicFlowFinder {
 		System.out.println(">>>>>Num of Articles : "+articles.length);
 		start = System.currentTimeMillis();
 		for(int aCnt = 0; aCnt < articles.length; aCnt++){
-			System.out.print("\r"+aCnt+" th Article");
-			System.out.print(">>>>> Processing ");
+			System.out.print(">>>>> Processing "+aCnt+" th Article");
 			//기사에서 출현빈도가 상위권에 드는 단어만 추린 벡터
 
 			double maxSim = 0;
@@ -62,9 +61,7 @@ public class TopicFlowFinder {
 				
 				//기사와, 토픽의 중심기사의 유사도 계산
 				//기본적으로는 Term Vector의 유사도로 비교, 인물 집합이 유사하면 유사도에 추가점을 준다
-				double[] termPersonSim = WordVector.termAndPersonSim(articles[aCnt], mainArticle);
-				double sim = termPersonSim[0];
-				if(termPersonSim[1] > WordVector.cutOffForPersonVector) sim += 0.1;
+				double sim = WordVector.topicSim(articles[aCnt], mainArticle);
 
 				if(sim > maxSim){
 					maxSim = sim;
@@ -73,7 +70,7 @@ public class TopicFlowFinder {
 				}
 				cnt++;
 			}
-
+			System.out.println(" // Maximum Similarity with other topics : "+maxSim);
 			if(maxSim > cutOff){ //Cutoff 보다 유사도가 크면, 기존 토픽에 포함시킨다(포함시키면서 중심 기사 새로 계산됨)
 				toAddNewArticle.addArticle(articles[aCnt]);
 				toAddNewArticle.setStartDate(articles[aCnt].getDate());
@@ -93,7 +90,7 @@ public class TopicFlowFinder {
 		System.out.println();
 		end = System.currentTimeMillis();
 		System.out.println(">>>>> Complete. Elapsed Time : "+((end - start)/(double)1000)+" sec");
-		System.out.println(">>>>> Inserting result into Database");
+		System.out.println(">>>>> Inserting result into Database..");
 		for(Topic t : topics){
 			if(t == null) break;
 			tdbh.insert(t.getMainArticle().getIndex(), t.getArticles().toString(), t.getStartDate());

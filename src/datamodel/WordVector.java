@@ -125,10 +125,19 @@ public class WordVector {
 		return sim;
 	}
 	
-	public static double[] termAndPersonSim(Article a1, Article a2){
-		double[] sim = new double[2];
-		sim[0] = WordVector.jacqSim(a1.getTermVector().topNwords(),a2.getTermVector().topNwords()); //상위 N개의 단어를 사용하여 자카드계수 계산
-		sim[1] = WordVector.jacqSim(a1.getPersonVector(), a2.getPersonVector()); //인물벡터의 유사도를 계산
+	public static double topicSim(Article a1, Article a2){
+		double sim = 0;
+		WordVector w1 = a1.getTermVector();
+		WordVector w2 = a2.getTermVector();
+		//언어모형의 유사도(공유하는 어휘 집합)
+		double langModelSim = WordVector.jacqSim(w1,w2);
+		//키워드의 유사도(키워드 중 공유하는 집합)
+		double keywordSim = WordVector.jacqSim(w1.topNwords(), w2.topNwords());
+		//인물의 유사도(인물 중 공유하는 인물 집합)
+		double peopleSim = WordVector.jacqSim(a1.getPersonVector(), a2.getPersonVector());
+		
+		sim = (langModelSim + keywordSim)/2;
+//		if(peopleSim > WordVector.cutOffForPersonVector) sim += 0.05;
 		return sim;
 	}
 	
