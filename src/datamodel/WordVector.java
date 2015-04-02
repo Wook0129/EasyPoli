@@ -56,9 +56,9 @@ public class WordVector {
 	}
 
 	public double[] getFreqVector(){
-		double[] freqVector = new double[numVoca];
+		double[] freqVector = new double[this.termFreqVector.size()];
 
-		for(int cnt = 0; cnt< numVoca; cnt++){
+		for(int cnt = 0; cnt< this.termFreqVector.size(); cnt++){
 			double value = termFreqVector.get(termFreqVector.keySet().toArray()[cnt]);
 			freqVector[cnt] = value;
 		}
@@ -134,11 +134,49 @@ public class WordVector {
 		//키워드의 유사도(키워드 중 공유하는 집합)
 		double keywordSim = WordVector.jacqSim(w1.topNwords(), w2.topNwords());
 		//인물의 유사도(인물 중 공유하는 인물 집합)
-		double peopleSim = WordVector.jacqSim(a1.getPersonVector(), a2.getPersonVector());
+//		double peopleSim = WordVector.jacqSim(a1.getPersonVector(), a2.getPersonVector());
 		
 		sim = (langModelSim + keywordSim)/2;
 //		if(peopleSim > WordVector.cutOffForPersonVector) sim += 0.05;
 		return sim;
+	}
+	
+	public static double cosSim(Article a1, Article a2){
+		double sim = 0;
+		HashMap<String,Double> bagOfWords = new HashMap<String,Double>();
+		HashMap<String,Double> bagOfWords2 = new HashMap<String,Double>();
+		WordVector convVector1 = new WordVector();
+		WordVector convVector2 = new WordVector();
+
+		for(String key : a1.getTermVector().getTermVector()){
+			bagOfWords.put(key,0.0);
+			bagOfWords2.put(key,0.0);
+		}
+		for(String key : a2.getTermVector().getTermVector()){
+			bagOfWords.put(key,0.0);
+			bagOfWords2.put(key,0.0);
+		}
+		convVector1.termFreqVector = bagOfWords;
+		convVector2.termFreqVector = bagOfWords2;
+		HashMap<String,Double> hm1 = a1.getTermVector().termFreqVector;
+		HashMap<String,Double> hm2 = a2.getTermVector().termFreqVector;
+		for(String key : hm1.keySet()){
+			convVector1.termFreqVector.put(key, hm1.get(key));
+		}
+		for(String key : hm2.keySet()){
+			convVector2.termFreqVector.put(key, hm2.get(key));
+		}
+		double size1 = 0;
+		double size2 = 0;
+		double[] freq1 = convVector1.getFreqVector();
+		double[] freq2 = convVector2.getFreqVector();
+		for(int cnt = 0; cnt<freq1.length; cnt++){
+			sim += freq1[cnt] * freq2[cnt];
+			size1 += freq1[cnt] * freq1[cnt];
+			size2 += freq2[cnt] * freq2[cnt];
+		}
+		sim = sim / (Math.sqrt(size1) * Math.sqrt(size2));
+ 		return sim;
 	}
 	
 }

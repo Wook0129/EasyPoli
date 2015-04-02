@@ -4,7 +4,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
 
-import ner.NERTagger;
 import datamodel.Article;
 
 public class ArticleDBHandler extends DBHandler{
@@ -53,7 +52,6 @@ public class ArticleDBHandler extends DBHandler{
 	public Article[] getAllArticles(){
 		
 		Article[] articles = null;
-		NERTagger ner = new NERTagger();
 		
 		Vector<Article> v = new Vector<Article>();
 		try{
@@ -66,7 +64,7 @@ public class ArticleDBHandler extends DBHandler{
 				String content = rs.getString("content");
 				String date = rs.getString("date");
 				String topicNum = rs.getString("topicnum");
-				Article article = new Article(index, ner.getNames(title + " " + content), title, content, date, topicNum);
+				Article article = new Article(index, title, content, date, topicNum);
 				v.add(article);
 			}
 			rs.close();

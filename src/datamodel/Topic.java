@@ -46,13 +46,11 @@ public class Topic {
 	private Article findMainArticle(){
 		Article main = new Article();
 		double maxSim = 0;
-
+		
 		for(Article a : this.articleSet){
-			if(a == null) break;
 			double sim = 0;
 			for(Article oa : this.articleSet){
-				if(oa == null) break;
-				sim = WordVector.topicSim(a, oa);
+				sim += WordVector.cosSim(a, oa);
 			}
 			if(sim > maxSim){
 				maxSim = sim;
